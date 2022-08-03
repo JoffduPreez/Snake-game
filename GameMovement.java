@@ -22,13 +22,13 @@ public class GameMovement {
         snake.addFirst(new SnakeNode(5, 10));
         snake.addFirst(new SnakeNode(6, 10));
 
-        grid[10][2].setBackground(Color.red);
-        grid[10][3].setBackground(Color.red);
-        grid[10][4].setBackground(Color.red);
-        grid[10][5].setBackground(Color.red);
-        grid[10][6].setBackground(Color.red);
+        grid[10][2].setBackground(Color.blue);
+        grid[10][3].setBackground(Color.blue);
+        grid[10][4].setBackground(Color.blue);
+        grid[10][5].setBackground(Color.blue);
+        grid[10][6].setBackground(Color.blue);
     
-        GameMovement.moveSnake(grid, snake);
+        // GameMovement.moveSnake(grid, snake);
     }
 
     public static void checkGameOver (JLabel[][] grid, SnakeNode node) {
@@ -40,7 +40,7 @@ public class GameMovement {
             System.out.println("game over");
         }
 
-        if (grid[node.y][node.x].getBackground() == Color.red) {
+        if (grid[node.y][node.x].getBackground() == Color.blue) {
             System.out.println("game over");
         }
     }
@@ -67,7 +67,7 @@ public class GameMovement {
                         node.y--;
                         snake.set(0, node);
                         node = snake.getFirst();
-                        grid[node.y][node.x].setBackground(Color.red);
+                        grid[node.y][node.x].setBackground(Color.blue);
                     } else if (GameMovement.direction == "east") {
                         grid[node.y][node.x].setBackground(Color.white);
                         node.x++;
@@ -75,19 +75,19 @@ public class GameMovement {
                         GameMovement.checkGameOver(grid, node);
                         snake.set(0, node);
                         node = snake.getFirst();
-                        grid[node.y][node.x].setBackground(Color.red);
+                        grid[node.y][node.x].setBackground(Color.blue);
                     } else if (GameMovement.direction == "south") {
                         grid[node.y][node.x].setBackground(Color.white);
                         node.y++;
                         snake.set(0, node);
                         node = snake.getFirst();
-                        grid[node.y][node.x].setBackground(Color.red);
+                        grid[node.y][node.x].setBackground(Color.blue);
                     } else if (GameMovement.direction == "west") {
                         grid[node.y][node.x].setBackground(Color.white);
                         node.x--;
                         snake.set(0, node);
                         node = snake.getFirst();
-                        grid[node.y][node.x].setBackground(Color.red);
+                        grid[node.y][node.x].setBackground(Color.blue);
                     }
                     
                     int i, j;
@@ -104,7 +104,7 @@ public class GameMovement {
                         if (i == GameMovement.snakeLength - 1) {
                             grid[y2][x2].setBackground(Color.white);
                         }
-                        grid[y1][x1].setBackground(Color.red);
+                        grid[y1][x1].setBackground(Color.blue);
     
     
                         
@@ -118,7 +118,7 @@ public class GameMovement {
                         if (j == GameMovement.snakeLength - 1) {
                             grid[y1][x1].setBackground(Color.white);
                         }
-                        grid[y2][x2].setBackground(Color.red);
+                        grid[y2][x2].setBackground(Color.blue);
 
                         i += 2;
                         j += 2;
