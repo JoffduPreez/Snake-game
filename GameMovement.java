@@ -8,7 +8,7 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 
 /*
- * This class contain the methodes used to controll the snake linked list
+ * This class contain the methodes used to control the snake linked list
  */
 
 public class GameMovement {
@@ -27,106 +27,120 @@ public class GameMovement {
         grid[10][4].setBackground(Color.blue);
         grid[10][5].setBackground(Color.blue);
         grid[10][6].setBackground(Color.blue);
-    
-        // GameMovement.moveSnake(grid, snake);
+        
+        GameMovement.direction = "not set";
     }
 
-    public static void checkGameOver (JLabel[][] grid, SnakeNode node) {
-        // check if it hit board boundries
-        if (node.x >= 20 || node.x <= 0) {
-            System.out.println("game over");
+    public void resetGame (JLabel titleField, JLabel msgField, JLabel[][] grid, LinkedList<SnakeNode> snake) {
+        for (int i = 0; i < 20; i++) {
+            for (int j = 0; j < 20; j++) {
+                grid[i][j].setBackground(Color.black);
+            }
         }
-        if (node.y >= 20 || node.y <= 0) {
-            System.out.println("game over");
+
+        snake.clear();
+    }
+
+    public static boolean checkGameOver (JLabel[][] grid, SnakeNode node) {
+        boolean gameOver = false;
+        // check if it hit board boundries
+        if (node.x >= 19 || node.x <= 0) {
+            gameOver = true;
+        }
+        if (node.y >= 19 || node.y <= 0) {
+            gameOver = true;
         }
 
         if (grid[node.y][node.x].getBackground() == Color.blue) {
-            System.out.println("game over");
+            gameOver = true;
         }
+
+        // System.out.println("gameover = " + gameOver);
+        return gameOver;
     }
 
-    public static void moveSnake (JLabel[][] grid, LinkedList<SnakeNode> snake) {
-        Timer timer = new Timer();
-        TimerTask myTask = new TimerTask() {
-            int x1, y1, x2, y2, x3, y3;
-            
-            @Override
-            public void run() {
-                SnakeNode node;
-                SnakeNode node1;
-                SnakeNode node2;
+    public boolean moveSnake (JLabel[][] grid, LinkedList<SnakeNode> snake) {
+        SnakeNode node;
+        SnakeNode node1;
+        SnakeNode node2;
+        int x1, y1, x2, y2;
+        boolean gameOver = false;
 
-                if (GameMovement.direction != "not set") {
-                    node = snake.getFirst();
-                    node1 = node; // save location 1
-                    x1 = node1.x; 
-                    y1 = node1.y;
+        if (GameMovement.direction != "not set") {
+            node = snake.getFirst();
+            node1 = node; // save location 1
+            x1 = node1.x; 
+            y1 = node1.y;
 
-                    if (GameMovement.direction == "north") {
-                        grid[node.y][node.x].setBackground(Color.white);
-                        node.y--;
-                        snake.set(0, node);
-                        node = snake.getFirst();
-                        grid[node.y][node.x].setBackground(Color.blue);
-                    } else if (GameMovement.direction == "east") {
-                        grid[node.y][node.x].setBackground(Color.white);
-                        node.x++;
-
-                        GameMovement.checkGameOver(grid, node);
-                        snake.set(0, node);
-                        node = snake.getFirst();
-                        grid[node.y][node.x].setBackground(Color.blue);
-                    } else if (GameMovement.direction == "south") {
-                        grid[node.y][node.x].setBackground(Color.white);
-                        node.y++;
-                        snake.set(0, node);
-                        node = snake.getFirst();
-                        grid[node.y][node.x].setBackground(Color.blue);
-                    } else if (GameMovement.direction == "west") {
-                        grid[node.y][node.x].setBackground(Color.white);
-                        node.x--;
-                        snake.set(0, node);
-                        node = snake.getFirst();
-                        grid[node.y][node.x].setBackground(Color.blue);
-                    }
-                    
-                    int i, j;
-                    i = 1;
-                    j = 2;
-                    while (i < GameMovement.snakeLength && j < GameMovement.snakeLength) {
-                        node2 = snake.get(i);
-                        x2 = node2.x;
-                        y2 = node2.y;
-    
-                        node2.x = x1;
-                        node2.y = y1; 
-                        snake.set(i, node2);
-                        if (i == GameMovement.snakeLength - 1) {
-                            grid[y2][x2].setBackground(Color.white);
-                        }
-                        grid[y1][x1].setBackground(Color.blue);
-    
-    
-                        
-                        node1 = snake.get(j);
-                        x1 = node1.x;
-                        y1 = node1.y;
-    
-                        node1.x = x2;
-                        node1.y = y2; 
-                        snake.set(j, node1);
-                        if (j == GameMovement.snakeLength - 1) {
-                            grid[y1][x1].setBackground(Color.white);
-                        }
-                        grid[y2][x2].setBackground(Color.blue);
-
-                        i += 2;
-                        j += 2;
-                    }
-                }
+            if (GameMovement.direction == "north") {
+                grid[node.y][node.x].setBackground(Color.black);
+                node.y--;
+                gameOver = GameMovement.checkGameOver(grid, node);
+                
+                snake.set(0, node);
+                node = snake.getFirst();
+                grid[node.y][node.x].setBackground(Color.blue);
+            } else if (GameMovement.direction == "east") {
+                grid[node.y][node.x].setBackground(Color.black);
+                node.x++;
+                gameOver = GameMovement.checkGameOver(grid, node);
+                
+                snake.set(0, node);
+                node = snake.getFirst();
+                grid[node.y][node.x].setBackground(Color.blue);
+            } else if (GameMovement.direction == "south") {
+                grid[node.y][node.x].setBackground(Color.black);
+                node.y++;
+                gameOver = GameMovement.checkGameOver(grid, node);
+                
+                snake.set(0, node);
+                node = snake.getFirst();
+                grid[node.y][node.x].setBackground(Color.blue);
+            } else if (GameMovement.direction == "west") {
+                grid[node.y][node.x].setBackground(Color.black);
+                node.x--;
+                gameOver = GameMovement.checkGameOver(grid, node);
+                
+                snake.set(0, node);
+                node = snake.getFirst();
+                grid[node.y][node.x].setBackground(Color.blue);
             }
-        };
-        
-        timer.schedule(myTask, 0, 150);
+            
+            int i, j;
+            i = 1;
+            j = 2;
+            while (i < GameMovement.snakeLength && j < GameMovement.snakeLength) {
+                node2 = snake.get(i);
+                x2 = node2.x;
+                y2 = node2.y;
+
+                node2.x = x1;
+                node2.y = y1; 
+                snake.set(i, node2);
+                if (i == GameMovement.snakeLength - 1) {
+                    grid[y2][x2].setBackground(Color.black);
+                }
+                grid[y1][x1].setBackground(Color.blue);
+
+
+                
+                node1 = snake.get(j);
+                x1 = node1.x;
+                y1 = node1.y;
+
+                node1.x = x2;
+                node1.y = y2; 
+                snake.set(j, node1);
+                if (j == GameMovement.snakeLength - 1) {
+                    grid[y1][x1].setBackground(Color.black);
+                }
+                grid[y2][x2].setBackground(Color.blue);
+
+                i += 2;
+                j += 2;
+            }
+        }
+
+        return gameOver;
     }
 }
