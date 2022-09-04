@@ -1,2 +1,13 @@
 # Snake-game
-This repository will be for the classic snake game. It will be fully made in java with a GUI
+This project is a simple replication of the classic arcade game: snake game
+
+How to run and play the game:
+After downloading the repository
+
+Goal of this project:
+
+
+Implementation:
+
+
+Improvments i would like to make:

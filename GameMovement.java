@@ -39,15 +39,17 @@ public class GameMovement {
         }
 
         snake.clear();
+        GameBoard.foodExists = false;
+        GameMovement.snakeLength = 5;
     }
 
     public static boolean checkGameOver (JLabel[][] grid, SnakeNode node) {
         boolean gameOver = false;
         // check if it hit board boundries
-        if (node.x >= 19 || node.x <= 0) {
+        if (node.x == 19 || node.x == 0) {
             gameOver = true;
         }
-        if (node.y >= 19 || node.y <= 0) {
+        if (node.y == 19 || node.y == 0) {
             gameOver = true;
         }
 
@@ -59,23 +61,41 @@ public class GameMovement {
         return gameOver;
     }
 
-    public boolean moveSnake (JLabel[][] grid, LinkedList<SnakeNode> snake) {
+    public boolean moveSnake (JLabel[][] grid, LinkedList<SnakeNode> snake, JLabel msgField) {
         SnakeNode node;
         SnakeNode node1;
         SnakeNode node2;
         int x1, y1, x2, y2;
         boolean gameOver = false;
+        boolean hitFood = false;
+        int max = 18;
+        int min = 1;
+        int range = max - min + 1;
+
+        // if food doesnt exist, add food
+        if (!GameBoard.foodExists) {
+            GameBoard.rand1 = (int)(Math.random() * range) + min;
+            GameBoard.rand2 = (int)(Math.random() * range) + min;
+            grid[GameBoard.rand1][GameBoard.rand2].setBackground(Color.red);
+            GameBoard.foodExists = true;
+        }
 
         if (GameMovement.direction != "not set") {
             node = snake.getFirst();
             node1 = node; // save location 1
             x1 = node1.x; 
             y1 = node1.y;
+            msgField.setText("Score: " + GameMovement.snakeLength);
 
             if (GameMovement.direction == "north") {
                 grid[node.y][node.x].setBackground(Color.black);
                 node.y--;
                 gameOver = GameMovement.checkGameOver(grid, node);
+
+                // check if we hit food
+                if (node.y == GameBoard.rand1 && node.x == GameBoard.rand2) {
+                    hitFood = true;
+                }
                 
                 snake.set(0, node);
                 node = snake.getFirst();
@@ -85,6 +105,11 @@ public class GameMovement {
                 node.x++;
                 gameOver = GameMovement.checkGameOver(grid, node);
                 
+                // check if we hit food
+                if (node.y == GameBoard.rand1 && node.x == GameBoard.rand2) {
+                    hitFood = true;
+                }
+                
                 snake.set(0, node);
                 node = snake.getFirst();
                 grid[node.y][node.x].setBackground(Color.blue);
@@ -92,6 +117,11 @@ public class GameMovement {
                 grid[node.y][node.x].setBackground(Color.black);
                 node.y++;
                 gameOver = GameMovement.checkGameOver(grid, node);
+                
+                // check if we hit food
+                if (node.y == GameBoard.rand1 && node.x == GameBoard.rand2) {
+                    hitFood = true;
+                }
                 
                 snake.set(0, node);
                 node = snake.getFirst();
@@ -101,15 +131,21 @@ public class GameMovement {
                 node.x--;
                 gameOver = GameMovement.checkGameOver(grid, node);
                 
+                // check if we hit food
+                if (node.y == GameBoard.rand1 && node.x == GameBoard.rand2) {
+                    hitFood = true;
+                }
+                
                 snake.set(0, node);
                 node = snake.getFirst();
                 grid[node.y][node.x].setBackground(Color.blue);
             }
             
+            // this basically updates the rest of the snake once the head moves
             int i, j;
             i = 1;
             j = 2;
-            while (i < GameMovement.snakeLength && j < GameMovement.snakeLength) {
+            while (i < GameMovement.snakeLength || j < GameMovement.snakeLength) {
                 node2 = snake.get(i);
                 x2 = node2.x;
                 y2 = node2.y;
@@ -118,26 +154,49 @@ public class GameMovement {
                 node2.y = y1; 
                 snake.set(i, node2);
                 if (i == GameMovement.snakeLength - 1) {
-                    grid[y2][x2].setBackground(Color.black);
+                    if (hitFood) {
+                        // add a new node to the snake. New node will be at position [y1][x1]
+                        snake.addLast(new SnakeNode(y1, x1));
+                        GameBoard.foodExists = false;
+                        GameMovement.snakeLength++;
+                        hitFood = false;
+                    } else {
+                        grid[y2][x2].setBackground(Color.black);
+                    }
                 }
                 grid[y1][x1].setBackground(Color.blue);
 
 
-                
-                node1 = snake.get(j);
-                x1 = node1.x;
-                y1 = node1.y;
-
-                node1.x = x2;
-                node1.y = y2; 
-                snake.set(j, node1);
-                if (j == GameMovement.snakeLength - 1) {
-                    grid[y1][x1].setBackground(Color.black);
+                if (j < GameMovement.snakeLength) {
+                    node1 = snake.get(j);
+                    x1 = node1.x;
+                    y1 = node1.y;
+    
+                    node1.x = x2;
+                    node1.y = y2; 
+                    snake.set(j, node1);
+                    if (j == GameMovement.snakeLength - 1) {
+                        if (hitFood) {
+                            // add a new node to the snake. New node will be at position [y2][x2]
+                            snake.addLast(new SnakeNode(y2, x2));
+                            GameBoard.foodExists = false;
+                            GameMovement.snakeLength++;
+                            hitFood = false;
+                        } else {
+                            grid[y1][x1].setBackground(Color.black);
+                        }
+                    }
+                    grid[y2][x2].setBackground(Color.blue);
                 }
-                grid[y2][x2].setBackground(Color.blue);
 
                 i += 2;
                 j += 2;
+
+                // if the boolean saying we hit food is set to true, then set the previous position of the last node to blue, create a new node in the snake with the x/y of the previous position of the last node, and increment snake length
+                // if (hitFood) {
+                //     foodExists = false;
+                //     snake.addLast(new SnakeNode(2, 10));
+                // }
             }
         }
 
